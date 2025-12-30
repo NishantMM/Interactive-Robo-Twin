@@ -1,0 +1,9 @@
+# Computer Vision & AI
+mediapipe==0.10.31
+opencv-python
+
+# Math & Data Handling
+numpy
+
+# Communication (Optional, for future Arduino use)
+pyserial
