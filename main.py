@@ -8,11 +8,11 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(model_complexity=0, min_detection_confidence=0.7)
 mp_draw = mp.solutions.drawing_utils
 
-# --- Physics Variables ---
+# physics
 dot_pos = [300, 300]
 velocity_y = 0
-gravity = 1.5  # The strength of the pull
-friction = 0.7  # How much it bounces (0.7 = 70% energy kept)
+gravity = 1.5  
+friction = 0.7  
 is_grabbing = False
 
 cap = cv2.VideoCapture(0)
@@ -37,28 +37,26 @@ while cap.isOpened():
             finger_dist = math.hypot(tx - ix, ty - iy)
             target_dist = math.hypot(pinch_x - dot_pos[0], pinch_y - dot_pos[1])
 
-            # Grabbing Logic
+            # Grabbing
             if finger_dist < 40 and target_dist < 50:
                 is_grabbing = True
-                velocity_y = 0  # Stop falling while held
+                velocity_y = 0  
                 dot_pos = [pinch_x, pinch_y]
             else:
                 is_grabbing = False
 
-            # Draw Skeleton
+            # Draw hand
             mp_draw.draw_landmarks(robot_canvas, hand_lms, mp_hands.HAND_CONNECTIONS)
 
-    # --- Physics Engine Update ---
+    # Physics
     if not is_grabbing:
         velocity_y += gravity  # Apply gravity
         dot_pos[1] += int(velocity_y)  # Move dot down
 
-        # Floor Collision (Don't let it fall past the bottom)
         if dot_pos[1] > h - 20:
             dot_pos[1] = h - 20
             velocity_y = -velocity_y * friction  # Bounce!
-
-            # Stop tiny jitters when it's almost still
+            
             if abs(velocity_y) < 2: velocity_y = 0
 
     # Draw the Object
